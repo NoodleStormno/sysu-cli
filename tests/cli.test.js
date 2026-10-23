@@ -10,7 +10,12 @@ import { normalizeTerm } from '../src/modules/term.js';
 import { parseTimetableRows, weekOffset } from '../src/parsers/course-parser.js';
 import { parseExamRows } from '../src/parsers/exam-parser.js';
 import { computeWeightedGpa, parseGradeRows } from '../src/parsers/grade-parser.js';
-import { extractUuidFromJwt, generateBookingSignature } from '../src/parsers/gym-parser.js';
+import {
+  computeSlotsHash,
+  extractUuidFromJwt,
+  generateBookingSignature,
+  solveSafelinePow
+} from '../src/parsers/gym-parser.js';
 import { enforceActionCooldown } from '../src/lib/rate-limit.js';
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -226,7 +231,7 @@ test('CLI contract: library search & holdings, gym venues/slots/me/book/cancel, 
   assert.equal(booked.code, 0);
   assert.equal(booked.body.data.status, 'Accepted');
   assert.equal(booked.body.data.venueName, '场地8');
-  assert.match(booked.body.data.bookingId, /^[0-9a-f]{32}\.\d+\.null$/);
+  assert.match(booked.body.data.bookingId, /^[0-9a-f]{32}\.\d+\.[0-9a-f]{32}$/);
 
   const cancelled = await invoke(['gym', 'cancel', '--id', 'b1111111-2222-4333-8444-555555555555']);
   assert.equal(cancelled.code, 0);
@@ -248,9 +253,15 @@ test('CLI contract: library search & holdings, gym venues/slots/me/book/cancel, 
   assert.equal(unpaid.body.data.items[0].feeName, '2026学年住宿费');
 });
 
-test('gym signature generator and anti-high-frequency rate limiter work as expected', async () => {
-  const sig = generateBookingSignature('test-uuid', 1700000000);
-  assert.equal(sig, '70d26990d75359840587c3af9ed1afe7.1700000000.null');
+test('gym WASM signature generator, SafeLine PoW solver, and anti-high-frequency rate limiter work as expected', async () => {
+  const sig = generateBookingSignature('test-uuid', 1700000000, 'test-hash');
+  assert.equal(sig, 'e02577dae13175e45f2e953f272f5c1e.1700000000.test-hash');
+
+  const hash = computeSlotsHash([{ VenueId: 'v1' }]);
+  assert.match(hash, /^[0-9a-f]{32}$/);
+
+  const powSuffix = solveSafelinePow('42f6d242a8e4484d95a6380a7153586958d91fc9', 9);
+  assert.equal(powSuffix, '3d4');
 
   const fakeJwt = `eyJhbGciOiJIUzI1NiJ9.${Buffer.from(JSON.stringify({ sub: '11111111-2222-4333-8444-555555555555' })).toString('base64url')}.sig`;
   assert.equal(extractUuidFromJwt(fakeJwt), '11111111-2222-4333-8444-555555555555');
