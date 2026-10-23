@@ -284,5 +284,117 @@
     "data": [
       { "alarmType": "1", "name": "Ⅰ级", "value": "0", "color": "green" }
     ]
+  },
+  "OPAC func=find-b&find_code=WRD&request=%E7%AE%97%E6%B3%95%E5%AF%BC%E8%AE%BA&local_base=ZSU01": "<div id=hitnum>记录 1 - 1 of 1</div><!-- filename: short-lcl-body--><!-- Z13-ISBN-ISSN (3100) = 978-7-111-40701-0\nDOC-NUMBER (3300) = 001011438\nZ05-BASE (3400) = ZSU01\nTOTAL-NUMBER-OF-ITEMS (3500) = 5\nTOTAL-NUMBER-OF-LOANED-ITEM (3600) = 1\nQR (3900) = 东校园中文图书（3楼/4楼）  TP301.6/126.2 %0A南校园中文理科书库（夹层4楼）  TP301.6/126.2 %0A --><table class=items><tr><td class=col2><div class=itemtitle><a href='#'>算法导论</a></div><table><tr><td class=label1>作者：<td class=content>科尔曼<td class=label1>索书号：<td class=content>TP301.6/126.2<tr><td class=label1>出版社：<td class=content>机械工业出版社<td class=label>年份：<td class=content>2013</table></table>",
+  "OPAC func=item-global&doc_library=ZSU01&doc_number=001011438": "<table><tr><td>详细</td><td></td><td>外借本</td><td>在架上</td><td></td><td>东校园流通</td><td>东校园中文图书（3楼/4楼）</td><td>TP301.6/126.2</td><td></td><td></td><td></td><td>A1801623</td></tr><tr><td>详细</td><td></td><td>外借本</td><td>20261104</td><td></td><td>南校园中文流通</td><td>南校园中文理科书库（夹层4楼）</td><td>TP301.6/126.2</td><td></td><td></td><td></td><td>A3297513</td></tr></table>",
+  "GYM GET /api/venuetype/all": [
+    {
+      "Identity": "c4f06a7d-bb6b-4a2f-9626-7bebfc4f09ae",
+      "Name": "南校园新体育馆羽毛球场（学生）",
+      "CampusName": "南校园",
+      "Description": "羽毛球场"
+    },
+    {
+      "Identity": "d5e17b8e-cc7c-4b3f-8737-8cfcfd5f10bf",
+      "Name": "东校园体育馆羽毛球场（学生）",
+      "CampusName": "东校园",
+      "Description": "羽毛球场"
+    }
+  ],
+  "GYM GET /api/venue/available-slots/range": [
+    {
+      "VenueId": "court-8",
+      "VenueName": "场地8",
+      "Timeslots": [
+        {
+          "Date": "2026-10-26",
+          "Start": "20:00",
+          "End": "21:00",
+          "AvailableCapacity": 1,
+          "TotalCapacity": 1,
+          "Charge": 30
+        },
+        {
+          "Date": "2026-10-26",
+          "Start": "21:00",
+          "End": "22:00",
+          "AvailableCapacity": 0,
+          "TotalCapacity": 1,
+          "Charge": 30
+        }
+      ]
+    }
+  ],
+  "GYM GET /api/Credit/Me": {
+    "Name": "张三",
+    "HostKey": "23000001",
+    "Credits": 120,
+    "CashWallet": 50
+  },
+  "GYM GET /api/BookingRequestVenue": [
+    {
+      "Identity": "b1111111-2222-4333-8444-555555555555",
+      "BookingId": "sig.1700000000.null",
+      "Status": "Accepted",
+      "VenueId": "court-8",
+      "VenueName": "场地8",
+      "Description": "东校园体育馆羽毛球场（学生）",
+      "StartDateTime": "2026-10-26T12:00:00Z",
+      "EndDateTime": "2026-10-26T13:00:00Z",
+      "Charge": 30,
+      "IsCash": false,
+      "CreatedAt": "2026-10-23T14:00:00Z"
+    }
+  ],
+  "GYM POST /api/BookingRequestVenue": {
+    "Code": 200,
+    "Message": "Success",
+    "Result": {
+      "Status": "Accepted"
+    }
+  },
+  "GYM DELETE /api/BookingRequestVenue/b1111111-2222-4333-8444-555555555555": {
+    "ok": true,
+    "status": 204
+  },
+  "USC GET /gateway/api/searchServicePage": {
+    "code": 200,
+    "result": {
+      "total": 1,
+      "records": [
+        {
+          "id": "S101",
+          "serviceName": "学生宿舍水电费退费申请",
+          "deptName": "总务部",
+          "typeName": "总务后勤",
+          "serviceIntro": "办理毕业或退宿水电费结算"
+        }
+      ]
+    }
+  },
+  "USC GET /gateway/api/todolist": {
+    "code": 200,
+    "result": {
+      "total": 1,
+      "records": [
+        {
+          "id": "T01",
+          "title": "在读证明申请",
+          "statusName": "审批中",
+          "applyUserName": "张三",
+          "createTime": "2026-10-23 10:00:00"
+        }
+      ]
+    }
+  },
+  "PAY GET /client/necessary/list": {
+    "code": 200,
+    "data": [
+      {
+        "feeName": "2026学年住宿费",
+        "amount": 1200,
+        "status": "未交费"
+      }
+    ]
   }
 }

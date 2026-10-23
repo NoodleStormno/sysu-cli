@@ -13,10 +13,13 @@ import * as dev from './modules/dev.js';
 import { doctor } from './modules/doctor.js';
 import * as exam from './modules/exam.js';
 import * as grade from './modules/grade.js';
+import * as gym from './modules/gym.js';
+import * as library from './modules/library.js';
 import * as notice from './modules/notice.js';
 import * as profile from './modules/profile.js';
 import * as program from './modules/program.js';
 import { getTermInfo } from './modules/term.js';
+import * as usc from './modules/usc.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json');
@@ -219,6 +222,154 @@ const COMMANDS = {
       json: { type: 'boolean' }
     },
     run: ({ options }) => withClient((client) => profile.viewProfile(client, options))
+  },
+  'library search': {
+    summary: 'Search SYSU Library OPAC catalog (title, author, call number, campus holdings) without login.',
+    options: {
+      query: { type: 'string' },
+      field: { type: 'string', choices: ['any', 'title', 'author', 'isbn', 'subject', 'callno', 'publisher'] },
+      lang: { type: 'string', choices: ['zh', 'en'] },
+      campus: { type: 'string' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => library.searchLibrary(options)
+  },
+  'library holdings': {
+    summary: 'Check per-copy loan status (on-shelf/due date), campus, shelf location, and call number for a book docNumber.',
+    options: {
+      doc: { type: 'string' },
+      lang: { type: 'string', choices: ['zh', 'en'] },
+      campus: { type: 'string' },
+      available: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) =>
+      library.getLibraryHoldings({
+        doc: options.doc,
+        lang: options.lang,
+        campus: options.campus,
+        availableOnly: Boolean(options.available)
+      })
+  },
+  'gym login': {
+    summary: 'Open a browser on gym.sysu.edu.cn and save the Scientia Bearer JWT and session cookies.',
+    options: {
+      browser: { type: 'string', choices: ['chrome', 'edge', 'chromium'] },
+      timeout: { type: 'integer', min: 15, max: 900 },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => gym.gymLogin({ browser: options.browser, timeoutSec: options.timeout ?? 240 })
+  },
+  'gym venues': {
+    summary: 'List all SYSU sports venues and sport types (羽毛球/乒乓球/网球/游泳/健身等) across campuses.',
+    options: {
+      campus: { type: 'string' },
+      search: { type: 'string' },
+      raw: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => gym.listGymVenues(options)
+  },
+  'gym slots': {
+    summary: 'Query available courts and timeslot capacities for a venue on a date (or 4-day window).',
+    options: {
+      venue: { type: 'string' },
+      date: { type: 'date' },
+      time: { type: 'string' },
+      court: { type: 'string' },
+      available: { type: 'boolean' },
+      raw: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) =>
+      gym.listGymSlots({
+        venue: options.venue,
+        date: options.date,
+        time: options.time,
+        court: options.court,
+        availableOnly: Boolean(options.available),
+        raw: Boolean(options.raw)
+      })
+  },
+  'gym me': {
+    summary: 'View personal sports credits (运动时), cash wallet balance, and active gym bookings/waitlist.',
+    options: {
+      raw: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => gym.getGymMe(options)
+  },
+  'gym book': {
+    summary: 'Perform a single low-frequency venue booking (or --waitlist request) for a specific date and time.',
+    options: {
+      venue: { type: 'string' },
+      date: { type: 'date' },
+      time: { type: 'string' },
+      court: { type: 'string' },
+      waitlist: { type: 'boolean' },
+      cash: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => gym.bookGymSlot(options)
+  },
+  'gym cancel': {
+    summary: 'Cancel an existing gym booking or waitlist entry by its bookingUuid.',
+    options: {
+      id: { type: 'string' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => gym.cancelGymBooking(options)
+  },
+  'usc login': {
+    summary: 'Open a browser on usc.sysu.edu.cn and pay.sysu.edu.cn to save USC token and payment hall cookies.',
+    options: {
+      browser: { type: 'string', choices: ['chrome', 'edge', 'chromium'] },
+      timeout: { type: 'integer', min: 15, max: 900 },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => usc.uscLogin({ browser: options.browser, timeoutSec: options.timeout ?? 240 })
+  },
+  'usc services': {
+    summary: 'Search or browse University Service Center (USC 大学服务中心) service items.',
+    options: {
+      search: { type: 'string' },
+      page: { type: 'integer', min: 1, max: 100 },
+      limit: { type: 'integer', min: 1, max: 100 },
+      raw: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) =>
+      usc.listUscServices({
+        search: options.search,
+        page: options.page ?? 1,
+        pageSize: options.limit ?? 20,
+        raw: Boolean(options.raw)
+      })
+  },
+  'usc tasks': {
+    summary: 'List personal USC workflow tasks (todo 待办 / done 已办 / complete 办结).',
+    options: {
+      type: { type: 'string', choices: ['todo', 'done', 'complete'] },
+      page: { type: 'integer', min: 1, max: 100 },
+      limit: { type: 'integer', min: 1, max: 100 },
+      raw: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) =>
+      usc.listUscTasks({
+        type: options.type ?? 'todo',
+        page: options.page ?? 1,
+        pageSize: options.limit ?? 20,
+        raw: Boolean(options.raw)
+      })
+  },
+  'fee unpaid': {
+    summary: 'List unpaid bills from SYSU Payment Hall (pay.sysu.edu.cn 交费大厅：学费/住宿费/水电杂费账单).',
+    options: {
+      raw: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => usc.listUnpaidFees(options)
   },
   'dev capture': {
     summary: 'Open a browser and record JSON XHR responses under /jwxt/ to inspect new endpoints.',

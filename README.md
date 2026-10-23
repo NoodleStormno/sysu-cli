@@ -4,7 +4,7 @@
 [![Node.js >=20](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](package.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-面向**中山大学本科教务系统（`jwxt.sysu.edu.cn`）**的 Agent-Friendly 命令行工具与 AI Skill。
+面向**中山大学校园服务（本科教务系统 `jwxt`、图书馆馆藏 OPAC、体育场馆预约 `gym`、大学服务中心 `usc` 与交费大厅 `pay`）**的 Agent-Friendly 命令行工具与 AI Skill。
 
 把常用教务查询封装成稳定命令和结构化 JSON 输出，供人类终端或 Codex、Claude Code、Cursor 等 AI Agent 直接调用。**不收集账号密码**，通过本机浏览器完成统一身份认证后复用会话。
 
@@ -80,6 +80,18 @@ sysu-cli auth status
 | 培养方案 | `sysu-cli program view [--category 分组] [--search 关键词]` | 查看个人培养方案基本信息、毕业学分要求及各模块课程表 |
 | 全校开课 | `sysu-cli catalog search [--term YYYY-N] [--name 课程] [--teacher 教师] [--campus 校区]` | 检索全校开课课程（教学班号、教师、院系、校区、学分） |
 | 学籍预警 | `sysu-cli profile view` | 查看个人学籍信息与 Ⅰ/Ⅱ/Ⅲ 级学业预警状态 |
+| 图书检索 | `sysu-cli library search --query 关键词 [--field any\|title\|author\|isbn\|callno] [--lang zh\|en] [--campus 校区]` | **免登录**检索中大图书馆馆藏书目、索书号、可借册数与各校区分布 |
+| | `sysu-cli library holdings --doc 书目号 [--lang zh\|en] [--campus 校区] [--available]` | **免登录**查询指定书目的单册借阅状态（`在架上`/应还日期）、具体楼层架位、索书号与条码 |
+| 体育场馆 | `sysu-cli gym login [--browser chrome\|edge\|chromium]` | 打开浏览器登录 `gym.sysu.edu.cn` 并保存运动场馆令牌 |
+| | `sysu-cli gym venues [--campus 校区] [--search 关键词]` | 查询全校各校区体育场馆与运动项目列表（羽毛球、乒乓球、网球、游泳、健身等） |
+| | `sysu-cli gym slots --venue 场馆名或ID [--date YYYY-MM-DD] [--time HH:MM] [--court 场地名] [--available]` | 查询指定场馆在某天（或未来 4 天）各场地、各时段的实时剩余容量与费用 |
+| | `sysu-cli gym me` | 查询个人运动时（Credits）、体育钱包余额及当前有效预约/候补订单 |
+| | `sysu-cli gym book --venue 场馆名或ID --date YYYY-MM-DD --time HH:MM [--court 场地名] [--waitlist] [--cash]` | **单次按需**预约指定场地与时段（或 `--waitlist` 候补），内置冷却锁严禁高频连发抢场 |
+| | `sysu-cli gym cancel --id 预约UUID` | 取消已预约的体育场地或候补记录 |
+| 服务中心 | `sysu-cli usc login [--browser chrome\|edge\|chromium]` | 打开浏览器登录大学服务中心（`usc.sysu.edu.cn`）与交费大厅（`pay.sysu.edu.cn`） |
+| | `sysu-cli usc services [--search 关键词] [--limit 20]` | 检索 USC 大学服务中心办理事项（如水电费退费、证明办理、户籍、成绩单等） |
+| | `sysu-cli usc tasks [--type todo\|done\|complete]` | 查看个人在 USC 的待办事项、已办事项与办结事项 |
+| 交费大厅 | `sysu-cli fee unpaid` | 查询中山大学交费大厅（`pay.sysu.edu.cn`）个人待缴费用账单（学费、住宿费、杂费等） |
 | 开发工具 | `sysu-cli dev capture [--url URL]` | 打开浏览器录制 `/jwxt/` 下的 JSON 接口，用于分析扩展新模块 |
 
 > **学期参数格式**：`YYYY-N`（其中 `YYYY` 为学年起始年份，例如 `2026-1` 表示 2026–2027 学年第一学期；同样兼容 `2026-2027-1`）。省略 `--term` 时默认查询当前学期。
@@ -146,7 +158,7 @@ User / AI Agent
 
 - **不碰密码**：CLI 从不读取或保存 NetID 账号密码。
 - **不绕过验证**：不绕过统一身份认证、极验（Geetest）滑块、企业微信扫码、访问频率限制或校园网/VPN 限制。
-- **只读优先**：仅封装学生本人权限范围内的低频只读查询，不提供抢课、选课、自动评教或代签到功能。
+- **只读与低频按需优先**：内置请求节流（`paceRequest`）与跨进程冷却锁（`enforceActionCooldown`），在代码与 Skill 层面双重限制高频轮询、并发爬虫与毫秒级抢场循环。
 - **本地隔离**：Cookie 与录制文件仅保存在 `~/.sysu-cli/`，已在 `.gitignore` 中排除，请勿手动提交或分享。
 
 ---

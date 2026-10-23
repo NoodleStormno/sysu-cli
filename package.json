@@ -1,6 +1,6 @@
 {
   "name": "sysu-cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": false,
   "description": "Agent-friendly CLI for Sun Yat-sen University (SYSU) web services.",
   "type": "module",

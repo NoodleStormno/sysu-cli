@@ -10,6 +10,10 @@ import { normalizeTerm } from '../src/modules/term.js';
 import { parseTimetableRows, weekOffset } from '../src/parsers/course-parser.js';
 import { parseExamRows } from '../src/parsers/exam-parser.js';
 import { computeWeightedGpa, parseGradeRows } from '../src/parsers/grade-parser.js';
+import { extractUuidFromJwt, generateBookingSignature } from '../src/parsers/gym-parser.js';
+import { enforceActionCooldown } from '../src/lib/rate-limit.js';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 
 const FIXTURE = join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'jwxt.json');
 
@@ -185,5 +189,85 @@ test('CLI contract: classroom, cet, notice, completion, program, catalog, profil
   assert.match(ics.body.data.ics, /BEGIN:VCALENDAR/);
   assert.match(ics.body.data.ics, /SUMMARY:数据结构与算法/);
   assert.match(ics.body.data.ics, /DTSTART;TZID=Asia\/Shanghai:20251027T080000/);
+});
+
+test('CLI contract: library search & holdings, gym venues/slots/me/book/cancel, usc services/tasks, and fee unpaid', async () => {
+  const libSearch = await invoke(['library', 'search', '--query', '算法导论', '--campus', '东校园']);
+  assert.equal(libSearch.code, 0);
+  assert.equal(libSearch.body.data.count, 1);
+  assert.equal(libSearch.body.data.books[0].docNumber, '001011438');
+  assert.equal(libSearch.body.data.books[0].callNumber, 'TP301.6/126.2');
+  assert.equal(libSearch.body.data.books[0].availableItems, 4);
+
+  const libHoldings = await invoke(['library', 'holdings', '--doc', '001011438', '--available']);
+  assert.equal(libHoldings.code, 0);
+  assert.equal(libHoldings.body.data.count, 1);
+  assert.equal(libHoldings.body.data.items[0].barcode, 'A1801623');
+  assert.equal(libHoldings.body.data.items[0].status, '在架上');
+
+  const venues = await invoke(['gym', 'venues', '--campus', '东校园']);
+  assert.equal(venues.code, 0);
+  assert.equal(venues.body.data.count, 1);
+  assert.equal(venues.body.data.venues[0].venueTypeId, 'd5e17b8e-cc7c-4b3f-8737-8cfcfd5f10bf');
+
+  const slots = await invoke(['gym', 'slots', '--venue', '东校园体育馆羽毛球场', '--date', '2026-10-26', '--available']);
+  assert.equal(slots.code, 0);
+  assert.equal(slots.body.data.totalAvailableSlots, 1);
+  assert.equal(slots.body.data.courts[0].venueName, '场地8');
+  assert.equal(slots.body.data.courts[0].slots[0].start, '20:00');
+
+  const me = await invoke(['gym', 'me']);
+  assert.equal(me.code, 0);
+  assert.equal(me.body.data.profile.credits, 120);
+  assert.equal(me.body.data.bookings[0].date, '2026-10-26');
+  assert.equal(me.body.data.bookings[0].startTime, '20:00');
+
+  const booked = await invoke(['gym', 'book', '--venue', '东校园体育馆羽毛球场', '--date', '2026-10-26', '--time', '20:00', '--court', '场地8']);
+  assert.equal(booked.code, 0);
+  assert.equal(booked.body.data.status, 'Accepted');
+  assert.equal(booked.body.data.venueName, '场地8');
+  assert.match(booked.body.data.bookingId, /^[0-9a-f]{32}\.\d+\.null$/);
+
+  const cancelled = await invoke(['gym', 'cancel', '--id', 'b1111111-2222-4333-8444-555555555555']);
+  assert.equal(cancelled.code, 0);
+  assert.equal(cancelled.body.data.cancelled, true);
+
+  const uscSvc = await invoke(['usc', 'services', '--search', '水电']);
+  assert.equal(uscSvc.code, 0);
+  assert.equal(uscSvc.body.data.count, 1);
+  assert.equal(uscSvc.body.data.services[0].department, '总务部');
+
+  const uscTodo = await invoke(['usc', 'tasks', '--type', 'todo']);
+  assert.equal(uscTodo.code, 0);
+  assert.equal(uscTodo.body.data.count, 1);
+  assert.equal(uscTodo.body.data.tasks[0].title, '在读证明申请');
+
+  const unpaid = await invoke(['fee', 'unpaid']);
+  assert.equal(unpaid.code, 0);
+  assert.equal(unpaid.body.data.count, 1);
+  assert.equal(unpaid.body.data.items[0].feeName, '2026学年住宿费');
+});
+
+test('gym signature generator and anti-high-frequency rate limiter work as expected', async () => {
+  const sig = generateBookingSignature('test-uuid', 1700000000);
+  assert.equal(sig, '70d26990d75359840587c3af9ed1afe7.1700000000.null');
+
+  const fakeJwt = `eyJhbGciOiJIUzI1NiJ9.${Buffer.from(JSON.stringify({ sub: '11111111-2222-4333-8444-555555555555' })).toString('base64url')}.sig`;
+  assert.equal(extractUuidFromJwt(fakeJwt), '11111111-2222-4333-8444-555555555555');
+
+  const tempHome = mkdtempSync(join(tmpdir(), 'sysu-cli-rl-'));
+  const prevHome = process.env.SYSU_CLI_HOME;
+  const prevForce = process.env.SYSU_FORCE_RATE_LIMIT;
+  process.env.SYSU_CLI_HOME = tempHome;
+  process.env.SYSU_FORCE_RATE_LIMIT = '1';
+  try {
+    await enforceActionCooldown('test.action', 5000);
+    await assert.rejects(() => enforceActionCooldown('test.action', 5000), { code: 'RATE_LIMITED' });
+  } finally {
+    if (prevHome === undefined) delete process.env.SYSU_CLI_HOME;
+    else process.env.SYSU_CLI_HOME = prevHome;
+    if (prevForce === undefined) delete process.env.SYSU_FORCE_RATE_LIMIT;
+    else process.env.SYSU_FORCE_RATE_LIMIT = prevForce;
+  }
 });
 

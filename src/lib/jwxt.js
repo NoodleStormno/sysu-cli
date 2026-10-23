@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 
 import { CookieJar, readSetCookies } from './cookies.js';
 import { CliError, loginRequired, upstreamChanged } from './errors.js';
+import { paceRequest } from './rate-limit.js';
 import { loadState, saveState } from './state.js';
 
 export const JWXT_ORIGIN = 'https://jwxt.sysu.edu.cn';
@@ -69,6 +70,7 @@ export class JwxtClient {
 
     let response;
     try {
+      await paceRequest('jwxt', 250);
       this.requests += 1;
       response = await this.fetchImpl(url, {
         method,
