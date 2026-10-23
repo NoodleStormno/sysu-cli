@@ -1,0 +1,44 @@
+{
+  "name": "sysu-cli",
+  "version": "0.2.0",
+  "private": false,
+  "description": "Agent-friendly CLI for Sun Yat-sen University (SYSU) web services.",
+  "type": "module",
+  "bin": {
+    "sysu-cli": "src/cli.js"
+  },
+  "files": [
+    "src",
+    "docs",
+    "skills",
+    "README.md",
+    "AGENTS.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "sysu-cli": "node src/cli.js"
+  },
+  "keywords": [
+    "sysu",
+    "cli",
+    "agent",
+    "campus",
+    "jwxt"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NoodleStormno/sysu-cli.git"
+  },
+  "homepage": "https://github.com/NoodleStormno/sysu-cli#readme",
+  "bugs": {
+    "url": "https://github.com/NoodleStormno/sysu-cli/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "playwright": "^1.50.0"
+  }
+}

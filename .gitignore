@@ -1,0 +1,8 @@
+node_modules/
+.sysu-cli/
+session.json
+captures/
+profiles/
+*.har
+*.trace.zip
+scratch/

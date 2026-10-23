@@ -1,0 +1,288 @@
+{
+  "GET /api/login/status": { "code": 200, "data": 1 },
+  "GET /base-info/acadyearterm/showNewAcadlist": {
+    "code": 200,
+    "data": { "acadYearSemester": "2025-1" }
+  },
+  "GET /base-info/school-calender/weekly?academicYear=2025-1": {
+    "code": 200,
+    "data": { "nowWeekly": "8", "nowTimeWeekly": 8 }
+  },
+  "GET /base-info/AcadyeartermSet/minorName?schoolYear=2025-1": {
+    "code": 200,
+    "data": [
+      { "sectionNumber": 1, "startTime": "08:00", "endTime": "08:45" },
+      { "sectionNumber": 2, "startTime": "08:55", "endTime": "09:40" },
+      { "sectionNumber": 5, "startTime": "14:20", "endTime": "15:05" }
+    ]
+  },
+  "GET /timetable-search/classTableInfo/selectStudentClassTable?academicYear=2025-1&weekly=8": {
+    "code": 200,
+    "data": [
+      {
+        "section": "1",
+        "monday": "xslx:bk;;kcmc:数据结构与算法;;rkjs:张老师;;skdd:公教楼B201;;jxb:202501;;skrq:第8周/2025-10-27/星期一/",
+        "tuesday": "",
+        "wednesday": "操作系统原理;;李老师;;实验楼C305",
+        "thursday": "",
+        "friday": ""
+      },
+      {
+        "section": "2",
+        "monday": "xslx:bk;;kcmc:数据结构与算法;;rkjs:张老师;;skdd:公教楼B201;;jxb:202501;;skrq:第8周/2025-10-27/星期一/",
+        "tuesday": "",
+        "wednesday": "操作系统原理;;李老师;;实验楼C305",
+        "thursday": "",
+        "friday": ""
+      },
+      {
+        "section": "5",
+        "monday": "xslx:bk;;kcmc:数据结构与算法;;rkjs:张老师;;skdd:公教楼B201;;jxb:202501;;skrq:第8周/2025-10-27/星期一/",
+        "tuesday": "大学英语;;王老师;;公教楼A104"
+      }
+    ]
+  },
+  "GET /achievement-manage/score-check/checkStuStatus": {
+    "code": 200,
+    "data": { "addScoreFlag": false }
+  },
+  "GET /achievement-manage/score-check/getPull": {
+    "code": 200,
+    "data": {
+      "selectYearPull": [{ "dataNumber": "2025-2026" }],
+      "selectTermPull": [{ "termNumber": "1" }],
+      "selectTrainType": [{ "dataNumber": "01" }]
+    }
+  },
+  "GET /achievement-manage/score-check/list?scoSchoolYear=2025-2026&trainTypeCode=01&addScoreFlag=false&scoSemester=1": {
+    "code": 200,
+    "data": [
+      {
+        "scoCourseName": "数据结构与算法",
+        "scoCourseNumber": "DCS201",
+        "scoCourseCategoryName": "专业必修",
+        "scoCredit": "4.0",
+        "scoFinalScore": "92",
+        "scoPoint": "4.2",
+        "teachClassRank": "5/86",
+        "scoExamNatureName": "正常考试"
+      },
+      {
+        "scoCourseName": "高等数学I",
+        "scoCourseNumber": "MATH101",
+        "scoCourseCategoryName": "公共必修",
+        "scoCredit": "5.0",
+        "scoFinalScore": "88",
+        "scoPoint": "3.8",
+        "teachClassRank": "14/120",
+        "scoExamNatureName": "正常考试"
+      }
+    ]
+  },
+  "GET /achievement-manage/score-check/getSortByYear?scoSchoolYear=2025-2026&trainTypeCode=01&addScoreFlag=false&scoSemester=1": {
+    "code": 200,
+    "data": { "avePoint": "3.98", "rank": "12/160" }
+  },
+  "GET /achievement-manage/score-check/stuCreditSitlist": {
+    "code": 200,
+    "data": [{ "totalCredit": 152, "earnedCredit": 96 }]
+  },
+  "GET /achievement-manage/score-check/getPicPie": {
+    "code": 200,
+    "data": [{ "ITEM": "90-100", "COU": 12 }]
+  },
+  "GET /schedule/agg/commonScheduleExamTime/queryExamWeekName?yearTerm=2025-1": {
+    "code": 200,
+    "data": [
+      {
+        "examWeekId": "EW18",
+        "examWeekName": "18-19周期末考",
+        "startDate": "2026-01-05",
+        "endDate": "2026-01-16",
+        "applyRange": "全校"
+      }
+    ]
+  },
+  "POST /examination-manage/classroomResource/queryStuEaxmInfo?code=jwxsd_ksxxck": {
+    "code": 200,
+    "data": [
+      {
+        "dataNumber": "1",
+        "timetable": {
+          "2": [
+            {
+              "emptyFlag": false,
+              "examSubjectName": "数据结构与算法",
+              "examDate": "2026-01-06",
+              "durationTime": "09:00-11:00",
+              "duration": "120",
+              "classroomNumber": "东校区公教楼D302",
+              "examStage": "期末考试",
+              "examMode": "闭卷"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "GET /base-info/campus/findCampusNamesBox": {
+    "code": 200,
+    "data": [
+      { "campusName": "东校园", "id": "5062203", "campusNumber": "3" },
+      { "campusName": "南校园", "id": "5062201", "campusNumber": "1" }
+    ]
+  },
+  "GET /base-info/teaching-building/pull?campusId=5062203": {
+    "code": 200,
+    "data": [
+      { "id": "3000001", "code": "3000001", "name": "公教楼", "floorNumber": "5" }
+    ]
+  },
+  "POST /schedule/agg/classroomOccupy/pageCheckList": {
+    "code": 200,
+    "data": {
+      "data": [
+        {
+          "date": "2026-10-26",
+          "campus": "东校园",
+          "teachingBuild": "公教楼",
+          "teachingBuildNum": "3000001",
+          "classroomNum": "B201",
+          "classroomID": "C201",
+          "floor": "2",
+          "seatCount": "120",
+          "oneSection": { "occupyReason": null, "occupyPro": null },
+          "twoSection": { "occupyReason": null, "occupyPro": null },
+          "threeSection": { "occupyReason": "计算机网络", "occupyPro": "5" }
+        },
+        {
+          "date": "2026-10-26",
+          "campus": "东校园",
+          "teachingBuild": "公教楼",
+          "teachingBuildNum": "3000001",
+          "classroomNum": "B202",
+          "classroomID": "C202",
+          "floor": "2",
+          "seatCount": "80",
+          "oneSection": { "occupyReason": "编译原理", "occupyPro": "5" },
+          "twoSection": { "occupyReason": "编译原理", "occupyPro": "5" }
+        }
+      ]
+    }
+  },
+  "POST /achievement-manage/englishGradeAchievement/stuPageList": {
+    "code": 200,
+    "data": {
+      "total": 2,
+      "rows": [
+        {
+          "languageLevel": "CET6",
+          "examYear": "2024",
+          "thePastOrNextHalfYearName": "上半年",
+          "writtenExaminationSubject": "（2）英语六级笔试",
+          "writtenExaminationTotalScore": "560",
+          "hearingScore": "195",
+          "readingScore": "220",
+          "writingScore": "145",
+          "whetherMissingTest": "否",
+          "whetherViolation": "否"
+        },
+        {
+          "languageLevel": "CET4",
+          "examYear": "2023",
+          "thePastOrNextHalfYearName": "下半年",
+          "writtenExaminationSubject": "（1）英语四级笔试",
+          "writtenExaminationTotalScore": "585",
+          "hearingScore": "185",
+          "readingScore": "225",
+          "writingScore": "175",
+          "whetherMissingTest": "否",
+          "whetherViolation": "否"
+        }
+      ]
+    }
+  },
+  "GET /system-manage/info-delivery?status=1&number=4&deliveryObject=02": {
+    "code": 200,
+    "data": {
+      "education": [
+        { "id": "N1", "title": "关于选派本科生赴海外交流的通知", "deliveryDate": "2026-10-23", "topMark": "0", "newDeliveryMark": "1" }
+      ],
+      "college": [
+        { "id": "N2", "title": "关于程序设计竞赛报名的通知", "deliveryDate": "2026-10-20", "topMark": "1", "newDeliveryMark": "0" }
+      ]
+    }
+  },
+  "GET /achievement-manage/score-check/credit-situation": {
+    "code": 200,
+    "data": [
+      {
+        "studentNo": "23000001",
+        "grade": "2023",
+        "professionNumber": "080901",
+        "teachPlanNumber": "P001",
+        "minGraduationCredit": 160,
+        "finishCredit": 120,
+        "finishCreditRate": 75.0
+      }
+    ]
+  },
+  "POST /gradua-degree/graduatemsg/studentsGraduationExamination/creditHoursStu?cultureTypeCode=01": {
+    "code": 200,
+    "data": [
+      { "courseCategoryNumber": "10", "courseCategoryName": "公必", "actualCredit": 36, "exemptCredit": 0, "earnedCredit": 32, "earnedAllCredit": 32 }
+    ]
+  },
+  "POST /gradua-degree/graduatemsg/studentsGraduationExamination/studentCourse": {
+    "code": 200,
+    "data": {
+      "total": 1,
+      "rows": [
+        { "courseNumber": "MAR114", "courseName": "形势与政策", "courseCategoryNumber": "10", "courseCategoryName": "公必", "acadYearSemester": "2025-1", "credit": 2, "score": "90" }
+      ]
+    }
+  },
+  "GET /training-programe/training-programe/undergradute/student/personalMainProgram": {
+    "code": 200,
+    "data": [
+      { "STUDENTNUMBER": "23000001", "GRADE": "2023", "COLLEGE": "计算机学院", "PROFESSIONCODE": "080901", "PROFESSIONNAME": "计算机科学与技术", "TEACHPLANNUMBER": "P001" }
+    ]
+  },
+  "GET /training-programe/trainingBasicInfo/getBasicInformation?id=P001": {
+    "code": 200,
+    "data": { "id": "P001", "grade": "2023", "collegeName": "计算机学院", "professionName": "计算机科学与技术", "schoolSystem": 4, "minGraduationCredit": 160 }
+  },
+  "GET /training-programe/trainingReqGraduate/showReqGraduateCreits?grade=2023&cultivateId=P001&cultivateCategoryId=01": {
+    "code": 200,
+    "data": [
+      { "courseCategoryName": "公必", "courseCategoryCode": "10", "requireCredit": 36 }
+    ]
+  },
+  "GET /training-programe/schemeSubmitAgg/getTableByProgramId?programId=P001": {
+    "code": 200,
+    "data": {
+      "publicRequired": [
+        { "courseNumber": "FL101", "courseName": "大学外语（I）", "courseEN": "College English I", "courseCategoryCode": "10", "credit": 2 }
+      ]
+    }
+  },
+  "POST /schedule/agg/schoolOpeningCoursesSchedule/querySchoolOpeningCourses": {
+    "code": 200,
+    "data": {
+      "total": 1,
+      "rows": [
+        { "class_ID": "CL1", "sumClassesNum": "20251001", "yearTerm": "2025-1", "courseNum": "DCS201", "courseName": "数据结构与算法", "credit": 4, "departmentName": "计算机学院", "campusName": "东校园", "teacherName": "张老师" }
+      ]
+    }
+  },
+  "GET /student-status/countrystu/studentRollView": {
+    "code": 200,
+    "data": { "studentNumber": "23000001", "basicName": "张三", "basicNameSpell": "ZHANG San", "grade": "2023", "collegeName": "计算机学院", "professionName": "计算机科学与技术", "schoolSystem": "4" }
+  },
+  "GET /alarm/alarm-archives/studentAlarmNumber": {
+    "code": 200,
+    "data": [
+      { "alarmType": "1", "name": "Ⅰ级", "value": "0", "color": "green" }
+    ]
+  }
+}
