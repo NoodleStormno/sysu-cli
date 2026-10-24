@@ -4,7 +4,7 @@
 [![Node.js >=20](https://img.shields.io/badge/node-%3E%3D20-brightgreen)](package.json)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-面向**中山大学校园服务（本科教务系统 `jwxt`、图书馆馆藏 OPAC、体育场馆预约 `gym`、大学服务中心 `usc` 与交费大厅 `pay`）**的 Agent-Friendly 命令行工具与 AI Skill。
+面向**中山大学校园服务（本科教务系统 `jwxt`、在线教学平台 `lms`、图书馆馆藏 OPAC、体育场馆预约 `gym`、大学服务中心 `usc` 与交费大厅 `pay`）**的 Agent-Friendly 命令行工具与 AI Skill。
 
 把常用教务查询封装成稳定命令和结构化 JSON 输出，供人类终端或 Codex、Claude Code、Cursor 等 AI Agent 直接调用。**不收集账号密码**，通过本机浏览器完成统一身份认证后复用会话。
 
@@ -92,6 +92,13 @@ sysu-cli auth status
 | | `sysu-cli usc services [--search 关键词] [--limit 20]` | 检索 USC 大学服务中心办理事项（如水电费退费、证明办理、户籍、成绩单等） |
 | | `sysu-cli usc tasks [--type todo\|done\|complete]` | 查看个人在 USC 的待办事项、已办事项与办结事项 |
 | 交费大厅 | `sysu-cli fee unpaid` | 查询中山大学交费大厅（`pay.sysu.edu.cn`）个人待缴费用账单（学费、住宿费、杂费等） |
+| 在线教学 | `sysu-cli lms login [--browser chrome\|edge\|chromium]` | 登录中山大学在线教学平台（`lms.sysu.edu.cn` Moodle）并保存 `MoodleSession` 与 `sesskey` |
+| | `sysu-cli lms categories` | **免登录**查询在线教学平台课程分类列表（本科生/研究生/培训/BB迁入课程） |
+| | `sysu-cli lms search --query 关键词` | **免登录**全站检索公开/SPOC 课程（课程ID、名称、教师、大纲简介） |
+| | `sysu-cli lms courses [--status all\|inprogress\|past\|future] [--search 关键词]` | 查询个人已选修的 LMS 课程列表与完成进度百分比 |
+| | `sysu-cli lms deadlines [--days 30]` | 汇总近期 LMS 未交作业与测验 DDL 倒计时时间线 |
+| | `sysu-cli lms tasks --course 课程ID [--type video\|quiz\|assign\|page\|all] [--todo] [--open] [--limit 5]` | 提取课程下所有任务/活动链接（支持 `--type video` 筛选待看视频课、`--todo` 筛选未完成项、`--open` 批量在浏览器打开） |
+| | `sysu-cli lms quiz --id 测验ID或URL [--attempt 作答ID] [--start]` | 获取小测/章节测验题目与选项内容并转为纯文本（`text`）及结构化 JSON |
 | 开发工具 | `sysu-cli dev capture [--url URL]` | 打开浏览器录制 `/jwxt/` 下的 JSON 接口，用于分析扩展新模块 |
 
 > **学期参数格式**：`YYYY-N`（其中 `YYYY` 为学年起始年份，例如 `2026-1` 表示 2026–2027 学年第一学期；同样兼容 `2026-2027-1`）。省略 `--term` 时默认查询当前学期。

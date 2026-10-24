@@ -251,6 +251,42 @@ test('CLI contract: library search & holdings, gym venues/slots/me/book/cancel, 
   assert.equal(unpaid.code, 0);
   assert.equal(unpaid.body.data.count, 1);
   assert.equal(unpaid.body.data.items[0].feeName, '2026学年住宿费');
+
+  const lmsCats = await invoke(['lms', 'categories']);
+  assert.equal(lmsCats.code, 0);
+  assert.equal(lmsCats.body.data.count, 2);
+  assert.equal(lmsCats.body.data.categories[0].name, '本科生课程');
+
+  const lmsSearch = await invoke(['lms', 'search', '--query', 'Python']);
+  assert.equal(lmsSearch.code, 0);
+  assert.equal(lmsSearch.body.data.courses[0].courseId, '1005033');
+
+  const lmsCourses = await invoke(['lms', 'courses']);
+  assert.equal(lmsCourses.code, 0);
+  assert.equal(lmsCourses.body.data.courses[0].courseId, '59');
+  assert.equal(lmsCourses.body.data.courses[0].progress, 60);
+
+  const lmsDdl = await invoke(['lms', 'deadlines']);
+  assert.equal(lmsDdl.code, 0);
+  assert.equal(lmsDdl.body.data.deadlines[0].moduleType, 'quiz');
+  assert.equal(lmsDdl.body.data.deadlines[0].activityName, '第一章测验');
+
+  const lmsTasks = await invoke(['lms', 'tasks', '--course', '59', '--todo', '--open']);
+  assert.equal(lmsTasks.code, 0);
+  assert.equal(lmsTasks.body.data.taskCount, 2);
+  assert.equal(lmsTasks.body.data.tasks[0].category, 'video');
+  assert.equal(lmsTasks.body.data.tasks[0].url, 'https://lms.sysu.edu.cn/mod/fsresource/view.php?id=190');
+  assert.equal(lmsTasks.body.data.opened.openedCount, 2);
+
+  const lmsQuiz = await invoke(['lms', 'quiz', '--id', '196']);
+  assert.equal(lmsQuiz.code, 0);
+  assert.equal(lmsQuiz.body.data.questionCount, 2);
+  assert.equal(lmsQuiz.body.data.questions[0].stem, '以下哪项属于监督学习算法？');
+  assert.equal(lmsQuiz.body.data.questions[0].options[1].text, '支持向量机 (SVM)');
+  assert.equal(lmsQuiz.body.data.questions[0].options[1].selected, true);
+  assert.match(lmsQuiz.body.data.text, /【第 1 题】\(选择题\)/);
+  assert.match(lmsQuiz.body.data.text, /\[x\] b\. 支持向量机 \(SVM\)/);
+  assert.match(lmsQuiz.body.data.text, /【第 2 题】\(判断题\)/);
 });
 
 test('gym WASM signature generator, SafeLine PoW solver, and anti-high-frequency rate limiter work as expected', async () => {

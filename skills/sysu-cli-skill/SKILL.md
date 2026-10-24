@@ -38,6 +38,9 @@ license: MIT
    - If any `gym` command returns `LOGIN_REQUIRED`, run `sysu-cli gym login` once and ask the user to finish CAS login in the opened browser window so `sysu-cli` can save the Scientia Bearer JWT.
 4. **University Service Center & Payment Hall (`usc.sysu.edu.cn` / `pay.sysu.edu.cn`)**:
    - If any `usc` or `fee` command returns `LOGIN_REQUIRED`, run `sysu-cli usc login` once and wait for the user to finish login in the opened browser window.
+5. **Online Learning Platform (`lms.sysu.edu.cn` Moodle)**:
+   - `sysu-cli lms categories` and `sysu-cli lms search` work without login.
+   - If `lms courses`, `lms deadlines`, `lms tasks`, or `lms quiz` returns `LOGIN_REQUIRED`, run `sysu-cli lms login` once (it will try silent CAS SSO first, or open a browser window if needed).
 
 ## Command Routing
 
@@ -66,11 +69,17 @@ license: MIT
 | Check court & timeslot availability | `sysu-cli gym slots --venue 场馆名或ID [--date YYYY-MM-DD] [--time HH:MM] [--court 场地名] [--available]` |
 | View sports credits, wallet & my bookings | `sysu-cli gym me` |
 | Book a court (single request only, no loops) | `sysu-cli gym book --venue 场馆名或ID --date YYYY-MM-DD --time HH:MM [--court 场地名] [--waitlist] [--cash]` |
-| Cancel a gym booking or waitlist entry | `sysu-cli gym cancel --id 预约UUID` |
+| Cancel a gym booking or waitlist entry | `sysu-cli gym cancel --id 预约UUID或订单号` |
 | Authenticate with `usc.sysu.edu.cn` & `pay.sysu.edu.cn` | `sysu-cli usc login` |
 | Search USC campus service items | `sysu-cli usc services [--search 关键词] [--limit 20]` |
 | List personal USC workflow tasks | `sysu-cli usc tasks [--type todo\|done\|complete]` |
 | List unpaid bills in SYSU Payment Hall | `sysu-cli fee unpaid` |
+| Authenticate with `lms.sysu.edu.cn` | `sysu-cli lms login` |
+| Browse or search LMS courses | `sysu-cli lms categories` / `sysu-cli lms search --query 关键词` |
+| List my enrolled LMS courses & progress | `sysu-cli lms courses [--status all\|inprogress\|past\|future] [--search 关键词]` |
+| List upcoming LMS assignment & quiz DDLs | `sysu-cli lms deadlines [--days 30]` |
+| Extract course task links / batch-open in browser | `sysu-cli lms tasks --course 课程ID [--type video\|quiz\|assign\|all] [--todo] [--open] [--limit 5]` |
+| Extract quiz questions & options as plain text | `sysu-cli lms quiz --id 测验ID或URL [--attempt 作答ID] [--start]` |
 | Environment / network diagnosis | `sysu-cli doctor` |
 | Disconnect & wipe local session | `sysu-cli auth logout` |
 

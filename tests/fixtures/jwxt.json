@@ -396,5 +396,46 @@
         "status": "未交费"
       }
     ]
-  }
+  },
+  "LMS GET /course/index.php": "<a href=\"https://lms.sysu.edu.cn/course/index.php?categoryid=56\">本科生课程</a><a href=\"https://lms.sysu.edu.cn/course/index.php?categoryid=57\">研究生课程</a>",
+  "LMS GET /course/search.php?search=Python": "<div class=\"coursebox\" data-courseid=\"1005033\"><div class=\"coursename\"><a href=\"https://lms.sysu.edu.cn/course/view.php?id=1005033\">Python程序设计</a></div></div>",
+  "LMS AJAX core_course_get_enrolled_courses_by_timeline_classification": {
+    "courses": [
+      {
+        "id": 59,
+        "fullname": "人工智能导论-2026-1",
+        "shortname": "AI-2026",
+        "coursecategory": "本科生课程",
+        "hasprogress": true,
+        "progress": 60,
+        "viewurl": "https://lms.sysu.edu.cn/course/view.php?id=59"
+      }
+    ]
+  },
+  "LMS AJAX core_calendar_get_action_events_by_timesort": {
+    "events": [
+      {
+        "id": 901,
+        "name": "第一章测验 到期",
+        "activityname": "第一章测验",
+        "activitystr": "测验将于此时间关闭",
+        "modulename": "quiz",
+        "instance": 196,
+        "timesort": 1793203200,
+        "overdue": false,
+        "course": {
+          "id": 59,
+          "fullname": "人工智能导论-2026-1"
+        },
+        "action": {
+          "name": "现在去测验",
+          "actionable": true,
+          "url": "https://lms.sysu.edu.cn/mod/quiz/view.php?id=196"
+        }
+      }
+    ]
+  },
+  "LMS GET /course/view.php?id=59": "<title>课程： 人工智能导论-2026-1</title><ul><li id=\"section-1\"><h3 class=\"sectionname\">第一章 绪论</h3><ul><li class=\"activity activity-wrapper fsresource modtype_fsresource hasinfo\" id=\"module-190\"><div class=\"activity-item\" data-activityname=\"1.1 导论视频课\"><a href=\"https://lms.sysu.edu.cn/mod/fsresource/view.php?id=190\"><span class=\"instancename\">1.1 导论视频课</span></a><div data-region=\"completion-info\"><div class=\"automatic-completion-conditions\" data-region=\"completionrequirements\"><span class=\"badge badge-pill badge-light\"><span class=\"font-weight-normal\">查看</span></span></div></div></div></li><li class=\"activity activity-wrapper quiz modtype_quiz hasinfo\" id=\"module-196\"><div class=\"activity-item\" data-activityname=\"第一章测验\"><a href=\"https://lms.sysu.edu.cn/mod/quiz/view.php?id=196\"><span class=\"instancename\">第一章测验</span></a><div data-region=\"completion-info\"><div class=\"automatic-completion-conditions\" data-region=\"completionrequirements\"><span class=\"badge badge-pill badge-light\"><span class=\"font-weight-normal\">获得及格分数</span></span></div></div></div></li></ul></li></ul>",
+  "LMS GET /mod/quiz/view.php?id=196": "<title>第一章测验</title><h2>第一章测验</h2><div id=\"intro\"><p>本测验共2题</p></div><a href=\"https://lms.sysu.edu.cn/mod/quiz/attempt.php?attempt=5001&amp;cmid=196\">继续上次答题</a>",
+  "LMS GET /mod/quiz/attempt.php?attempt=5001&cmid=196": "<title>第一章测验</title><div id=\"question-5001-1\" class=\"que multichoice deferredfeedback notyetanswered\"><div class=\"info\"><h3 class=\"no\">题目 <span class=\"qno\">1</span></h3><div class=\"state\">未回答</div><div class=\"grade\">满分1.00</div></div><div class=\"content\"><div class=\"formulation clearfix\"><div class=\"qtext\"><p>以下哪项属于监督学习算法？</p></div><div class=\"ablock\"><div class=\"answer\"><div class=\"r0\"><input type=\"radio\" name=\"q1\" value=\"0\" /><span class=\"answernumber\">a. </span><div><p>K-Means 聚类</p></div></div><div class=\"r1\"><input type=\"radio\" name=\"q1\" value=\"1\" checked=\"checked\" /><span class=\"answernumber\">b. </span><div><p>支持向量机 (SVM)</p></div></div></div></div></div></div></div><div id=\"question-5001-2\" class=\"que truefalse deferredfeedback notyetanswered\"><div class=\"info\"><h3 class=\"no\">题目 <span class=\"qno\">2</span></h3><div class=\"state\">未回答</div><div class=\"grade\">满分1.00</div></div><div class=\"content\"><div class=\"formulation clearfix\"><div class=\"qtext\"><p>梯度下降法一定能收敛到全局最优解。</p></div><div class=\"ablock\"><div class=\"answer\"><div class=\"r0\"><input type=\"radio\" name=\"q2\" value=\"1\" /><label>对</label></div><div class=\"r1\"><input type=\"radio\" name=\"q2\" value=\"0\" /><label>错</label></div></div></div></div></div></div>"
 }

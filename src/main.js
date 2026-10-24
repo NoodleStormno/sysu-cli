@@ -15,6 +15,7 @@ import * as exam from './modules/exam.js';
 import * as grade from './modules/grade.js';
 import * as gym from './modules/gym.js';
 import * as library from './modules/library.js';
+import * as lms from './modules/lms.js';
 import * as notice from './modules/notice.js';
 import * as profile from './modules/profile.js';
 import * as program from './modules/program.js';
@@ -370,6 +371,77 @@ const COMMANDS = {
       json: { type: 'boolean' }
     },
     run: ({ options }) => usc.listUnpaidFees(options)
+  },
+  'lms login': {
+    summary: 'Authenticate with SYSU Online Learning Platform (lms.sysu.edu.cn Moodle) via CAS SSO or browser.',
+    options: {
+      browser: { type: 'string', choices: ['chrome', 'edge', 'chromium'] },
+      timeout: { type: 'integer', min: 15, max: 900 },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => lms.lmsLogin({ browser: options.browser, timeoutSec: options.timeout ?? 240 })
+  },
+  'lms categories': {
+    summary: 'List course categories on lms.sysu.edu.cn without requiring login.',
+    options: {
+      raw: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => lms.listLmsCategories(options)
+  },
+  'lms search': {
+    summary: 'Search public/SPOC courses across lms.sysu.edu.cn by keyword.',
+    options: {
+      query: { type: 'string' },
+      raw: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => lms.searchLmsCourses(options)
+  },
+  'lms courses': {
+    summary: 'List your enrolled courses on lms.sysu.edu.cn (filterable by --status inprogress|past|future|all).',
+    options: {
+      status: { type: 'string', choices: ['all', 'inprogress', 'past', 'future'] },
+      search: { type: 'string' },
+      raw: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => lms.listLmsCourses(options)
+  },
+  'lms deadlines': {
+    summary: 'List upcoming assignment and quiz deadlines from your LMS calendar timeline.',
+    options: {
+      days: { type: 'integer', min: 1, max: 365 },
+      raw: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => lms.listLmsDeadlines(options)
+  },
+  'lms tasks': {
+    summary: 'Extract task/activity links for a course (filter by --type video|quiz|assign|page|all or --todo, and batch-open with --open).',
+    options: {
+      course: { type: 'string' },
+      type: { type: 'string', choices: ['all', 'video', 'fsresource', 'quiz', 'assign', 'resource', 'page', 'forum', 'folder', 'url'] },
+      todo: { type: 'boolean' },
+      section: { type: 'integer', min: 0, max: 100 },
+      open: { type: 'boolean' },
+      limit: { type: 'integer', min: 1, max: 10 },
+      browser: { type: 'string', choices: ['chrome', 'edge', 'chromium'] },
+      raw: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => lms.listLmsTasks(options)
+  },
+  'lms quiz': {
+    summary: 'Extract quiz questions and options from lms.sysu.edu.cn as structured JSON and readable plain text.',
+    options: {
+      id: { type: 'string' },
+      attempt: { type: 'string' },
+      start: { type: 'boolean' },
+      raw: { type: 'boolean' },
+      json: { type: 'boolean' }
+    },
+    run: ({ options }) => lms.getLmsQuiz(options)
   },
   'dev capture': {
     summary: 'Open a browser and record JSON XHR responses under /jwxt/ to inspect new endpoints.',
